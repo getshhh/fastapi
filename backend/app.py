@@ -1,10 +1,24 @@
 from fastapi import FastAPI,  HTTPException, Depends
 from pydantic import BaseModel, EmailStr, constr, validator, Field
 
-from crud import (get_user, create_user, 
-                  get_task, create_task, 
-                  check_id_task, update_task, update_priority, delete_task, delete_user, filter_task_title)
-from db import Base, engine, get_session
+from crud.User import (
+    get_user,
+    create_user,
+    delete_user,
+)
+
+from crud.Task import (
+    get_task,
+    create_task,
+    check_id_task,
+    update_task,
+    update_priority,
+    delete_task,
+    filter_task_title,
+    filter_task_priority
+)
+
+from db.db import Base, engine, get_session
 
 
 
@@ -72,4 +86,8 @@ def delete_user_func(
 
 @app.get("/filer_task/")
 async def list_task(search_title: str, db = Depends(get_session)):
-    return filter_task_title(search_title, db)    
+    return filter_task_title(search_title, db)  
+
+@app.get("/filer_priority/")
+async def priority_task(priority: int, db = Depends(get_session)):
+    return filter_task_priority(priority, db)    
